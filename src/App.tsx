@@ -18,6 +18,7 @@ export const App: React.FC = () => {
   const [title, setTitle] = useState('');
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [deletingTodos, setDeletingTodos] = useState<number[]>([]);
+  //const [fadingTodos, setFadingTodos] = useState<number[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const hiddenError = (message: string) => {
@@ -81,7 +82,6 @@ export const App: React.FC = () => {
 
   const handleDeleteTodo = async (id: number) => {
     setDeletingTodos(prev => [...prev, id]);
-
     try {
       await deleteTodo(id);
       setTodos(currentTodos => currentTodos.filter(todo => todo.id !== id));

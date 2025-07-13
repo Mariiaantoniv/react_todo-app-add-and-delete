@@ -3,6 +3,7 @@ import React from 'react';
 import { Todo } from '../../types/Todo';
 import { Filter } from '../../types/Filter';
 import classNames from 'classnames';
+// import { TodoLoader } from '../Loader';
 
 type Props = {
   todos: Todo[];
@@ -11,6 +12,7 @@ type Props = {
   onDelete: (id: number) => void;
   loading: boolean;
   deletingTodos: number[];
+  //fadingTodos: number[];
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -34,15 +36,6 @@ export const TodoList: React.FC<Props> = ({
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {loading && (
-        <div
-          className={classNames('loader', {
-            'is-active': loading,
-          })}
-          data-cy="TodoLoader"
-        />
-      )}
-
       {visibleTodos.map(todo => (
         <div
           key={todo.id}
@@ -81,7 +74,10 @@ export const TodoList: React.FC<Props> = ({
             className={classNames('modal', 'overlay', {
               'is-active': deletingTodos.includes(todo.id),
             })}
-          />
+          >
+            <div className="modal-background has-background-white-ter" />
+            <div className="loader" />
+          </div>
         </div>
       ))}
 
