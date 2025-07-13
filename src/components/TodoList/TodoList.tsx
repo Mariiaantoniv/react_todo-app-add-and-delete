@@ -3,7 +3,7 @@ import React from 'react';
 import { Todo } from '../../types/Todo';
 import { Filter } from '../../types/Filter';
 import classNames from 'classnames';
-// import { TodoLoader } from '../Loader';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 type Props = {
   todos: Todo[];
@@ -12,7 +12,6 @@ type Props = {
   onDelete: (id: number) => void;
   loading: boolean;
   deletingTodos: number[];
-  //fadingTodos: number[];
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -36,77 +35,83 @@ export const TodoList: React.FC<Props> = ({
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {visibleTodos.map(todo => (
-        <div
-          key={todo.id}
-          data-cy="Todo"
-          className={classNames('todo', {
-            completed: todo.completed,
-            loading: deletingTodos.includes(todo.id),
-          })}
-        >
-          <label className="todo__status-label">
-            <input
-              data-cy="TodoStatus"
-              type="checkbox"
-              className="todo__status"
-              checked={todo.completed}
-              disabled={deletingTodos.includes(todo.id)}
-            />
-          </label>
+      <TransitionGroup>
+        {visibleTodos.map(todo => (
+          <CSSTransition key={todo.id} timeout={300} classNames="item">
+            <div
+              key={todo.id}
+              data-cy="Todo"
+              className={classNames('todo', {
+                completed: todo.completed,
+                loading: deletingTodos.includes(todo.id),
+              })}
+            >
+              <label className="todo__status-label">
+                <input
+                  data-cy="TodoStatus"
+                  type="checkbox"
+                  className="todo__status"
+                  checked={todo.completed}
+                  disabled={deletingTodos.includes(todo.id)}
+                />
+              </label>
 
-          <span data-cy="TodoTitle" className="todo__title">
-            {todo.title}
-          </span>
+              <span data-cy="TodoTitle" className="todo__title">
+                {todo.title}
+              </span>
 
-          <button
-            type="button"
-            className="todo__remove"
-            data-cy="TodoDelete"
-            onClick={() => onDelete(todo.id)}
-            disabled={deletingTodos.includes(todo.id)}
-          >
-            ×
-          </button>
+              <button
+                type="button"
+                className="todo__remove"
+                data-cy="TodoDelete"
+                onClick={() => onDelete(todo.id)}
+                disabled={deletingTodos.includes(todo.id)}
+              >
+                ×
+              </button>
 
-          <div
-            data-cy="TodoLoader"
-            className={classNames('modal', 'overlay', {
-              'is-active': deletingTodos.includes(todo.id),
-            })}
-          >
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
-        </div>
-      ))}
+              <div
+                data-cy="TodoLoader"
+                className={classNames('modal', 'overlay', {
+                  'is-active': deletingTodos.includes(todo.id),
+                })}
+              >
+                <div className="modal-background has-background-white-ter" />
+                <div className="loader" />
+              </div>
+            </div>
+          </CSSTransition>
+        ))}
 
-      {tempTodo && (
-        <div data-cy="Todo" className="todo">
-          <label className="todo__status-label">
-            <input
-              type="checkbox"
-              className="todo__status"
-              checked={false}
-              disabled
-            />
-          </label>
+        {tempTodo && (
+          <CSSTransition key={0} timeout={300} classNames="temp-item">
+            <div data-cy="Todo" className="todo">
+              <label className="todo__status-label">
+                <input
+                  type="checkbox"
+                  className="todo__status"
+                  checked={false}
+                  disabled
+                />
+              </label>
 
-          <span className="todo__title" data-cy="TodoTitle">
-            {tempTodo.title}
-          </span>
-          <button type="button" className="todo__remove" disabled>
-            ×
-          </button>
+              <span className="todo__title" data-cy="TodoTitle">
+                {tempTodo.title}
+              </span>
+              <button type="button" className="todo__remove" disabled>
+                ×
+              </button>
 
-          <div
-            data-cy="TodoLoader"
-            className={classNames('modal', 'overlay', {
-              'is-active': loading,
-            })}
-          />
-        </div>
-      )}
+              <div
+                data-cy="TodoLoader"
+                className={classNames('modal', 'overlay', {
+                  'is-active': loading,
+                })}
+              />
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     </section>
   );
 };
